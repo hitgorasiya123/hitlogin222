@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Foldit&display=swap" rel="stylesheet">
+
+    <title>Calcultor</title>
+    <style>
+        body{
+    background-color: rgb(37, 37, 37);
+}
+
+.container {
+    position: absolute;
+    top: 27%;
+    left: 35%;
+    width: 427px;
+    height: 603px;
+    background-color: #535353;
+    box-shadow: 11px 8px 39px 25px black;
+    border-radius: 23px;
+}
+.container .grid{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 31px;
+  padding: 34px;
+  position: absolute;
+  top: 94px;
+  left: 0%;
+  width: 359px;
+  height: 73%;
+  background-color: #535353;
+  border-radius: 54px;
+}
+
+.container #number {
+    position: relative;
+    top: 9px;
+    left: 3px;
+    width: 68px;
+    height: 68px;
+    font-size: 1.2rem;
+    background-color: #e4e4e4;
+    border-radius: 26px;
+    border: 2px solid #e4e4e4;
+    box-shadow: -4px -3px 22px 7px white;
+    transition: 0.3s;
+}
+.container #operator {
+    position: relative;
+    top: 9px;
+    left: 3px;
+    width: 68px;
+    height: 68px;
+    font-size: 1.4rem;
+    background-color: rgb(107 216 239);
+    border-radius: 26px;
+    border: 2px solid rgb(107 216 239);
+    box-shadow: -4px -3px 22px 7px rgb(96 175 192);
+    transition: 0.1s;
+}
+.container #clear {
+    position: relative;
+    top: 9px;
+    left: 3px;
+    width: 68px;
+    height: 68px;
+    font-size: 1.2rem;
+    background-color: rgb(255 70 70);
+    border-radius: 26px;
+    border: 2px solid rgb(255 70 70);
+    box-shadow: -4px -3px 22px 7px rgb(247 86 86);
+    transition: 0.3s;
+}
+
+
+.container .display .calculator-screen{
+    position: absolute;
+    bottom: 100%;
+    left: 7%;
+    width: 357px;
+    height: 10%;
+    background-color: #aaaaaa;
+    text-align: end;
+    font-size: 2.6rem;
+    font-family: 'Foldit', cursive;
+    border: 6px solid #aaaaaa;
+    border-radius: 15px;
+    box-shadow: -2px -3px 19px 6px #a3fff9;
+    transition: 0.9s;
+}
+
+
+/* Hover effect */
+
+.container #number:hover {
+    cursor: pointer;
+    font-size: 2rem;
+    background-color: #e4e4e4;
+    border-radius: 26px;
+    border: 2px solid black;
+    box-shadow: -4px -3px 22px 7px black;
+    transform: rotate(360deg);
+}
+
+.container #operator:hover {
+    cursor: pointer;
+    font-size: 2rem;
+    background-color: rgb(107 216 239);
+    border-radius: 26px;
+    border: 2px solid rgb(107 216 239);
+    box-shadow: -4px -3px 22px 7px black;
+    transform: scale(1.1);
+}
+
+.container #clear:hover {
+    cursor: pointer;
+    font-size: 2rem;
+    background-color: rgb(255 70 70);
+    border-radius: 26px;
+    border: 2px solid rgb(255 70 70);
+    box-shadow: -4px -3px 22px 7px black;
+    transform: rotate(-360deg);
+}
+
+.container .display .calculator-screen:hover{
+    cursor: text;
+ 
+}
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="grid">
+        <button type="button" id="number" value="7">7</button>
+        <button type="button" id="number" value="8">8</button>
+        <button type="button" id="number" value="9">9</button>
+        <button type="button" id="operator" value="+">+</button>
+        <button type="button" id="number" value="4">4</button>
+        <button type="button" id="number" value="5">5</button>
+        <button type="button" id="number" value="6">6</button>
+        <button type="button" id="operator" value="-">-</button>
+        <button type="button" id="number" value="1">1</button>
+        <button type="button" id="number" value="2">2</button>
+
+        <button type="button" id="number" value="3">3</button>
+
+        <button type="button" id="operator" value="*">&times;</button>
+        <button type="button" id="clear" value="all-clear">C</button>
+        <button type="button" id="number" value="0">0</button>
+        <button type="button" id="operator" value="=">=</button>
+        <button type="button" id="operator" value="/">&divide;</button>
+        <div class="display">
+            <input type="text" class="calculator-screen" value="" disabled />
+        </div>
+  
+    </div>
+    </div>
+    <script>
+        const calculator = {
+        displayValue: '0',
+        firstOperand: null,
+        waitingForSecondOperand: false,
+        operator: null,
+      };
+      
+      function inputDigit(digit) {
+        const { displayValue, waitingForSecondOperand } = calculator;
+      
+        if (waitingForSecondOperand === true) {
+          calculator.displayValue = digit;
+          calculator.waitingForSecondOperand = false;
+        } else {
+          calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
+        }
+      }
+      
+
+      
+      function handleOperator(nextOperator) {
+        const { firstOperand, displayValue, operator } = calculator
+        const inputValue = parseFloat(displayValue);
+        
+        if (operator && calculator.waitingForSecondOperand)  {
+          calculator.operator = nextOperator;
+          return;
+        }
+      
+      
+        if (firstOperand == null && !isNaN(inputValue)) {
+          calculator.firstOperand = inputValue;
+        } else if (operator) {
+          const result = calculate(firstOperand, inputValue, operator);
+      
+          calculator.displayValue = `${parseFloat(result.toFixed(7))}`;
+          calculator.firstOperand = result;
+        }
+      
+        calculator.waitingForSecondOperand = true;
+        calculator.operator = nextOperator;
+      }
+      
+      function calculate(firstOperand, secondOperand, operator) {
+        if (operator === '+') {
+          return firstOperand + secondOperand;
+        } else if (operator === '-') {
+          return firstOperand - secondOperand;
+        } else if (operator === '*') {
+          return firstOperand * secondOperand;
+        } else if (operator === '/') {
+          return firstOperand / secondOperand;
+        }
+      
+        return secondOperand;
+      }
+      
+      function resetCalculator() {
+        calculator.displayValue = '0';
+        calculator.firstOperand = null;
+        calculator.waitingForSecondOperand = false;
+        calculator.operator = null;
+      }
+      
+      function updateDisplay() {
+        const display = document.querySelector('.calculator-screen');
+        display.value = calculator.displayValue;
+      }
+      
+      updateDisplay();
+      
+      const keys = document.querySelector('#number');
+      keys.addEventListener('click', event => {
+        const { target } = event;
+        const { value } = target;
+        if (target.matches('button')) {
+          
+        }
+      
+        switch (value) {
+          case '+':
+          case '-':
+          case '*':
+          case '/':
+          case '=':
+            handleOperator(value);
+            break;
+          case 'all-clear':
+            resetCalculator();
+            break;
+          default:
+            if (Number.isInteger(parseFloat(value))) {
+              inputDigit(value);
+            }
+        }
+        updateDisplay();
+      });
+    </script>
+</body>
+</html>
